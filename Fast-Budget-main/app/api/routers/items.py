@@ -57,3 +57,19 @@ def remove(
     if item.created_by_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Sem permissão para excluir este item")
     delete_item(db, item)
+
+from app.crud.item import list_items_by_user
+
+@router.get("/me", response_model=list[ItemRead])
+def read_my_items(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_active_user),
+    skip: int = 0,
+    limit: int = 100,
+) -> list[ItemRead]:
+    return list_items_by_user(
+        db=db,
+        user_id=current_user.id,
+        skip=skip,
+        limit=limit,
+    )
