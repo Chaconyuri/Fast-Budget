@@ -31,3 +31,17 @@ def update_item(db: Session, item: Item, item_in: ItemUpdate) -> Item:
 def delete_item(db: Session, item: Item) -> None:
     db.delete(item)
     db.commit()
+
+def list_items_by_user(
+    db: Session,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+) -> list[Item]:
+    return (
+        db.query(Item)
+        .filter(Item.created_by_id == user_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
