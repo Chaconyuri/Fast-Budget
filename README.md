@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ## Executar
 
 ```bash
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload
 ```
 
 ## Swagger
