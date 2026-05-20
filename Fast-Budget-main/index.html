@@ -2,12 +2,194 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fast Budget</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="page">
+      <header class="topbar">
+        <div>
+          <h1>Fast Budget</h1>
+          <p>Um painel simples para criar usuários, serviços, itens e orçamentos diretamente no backend.</p>
+        </div>
+        <nav>
+          <button type="button" onclick="showSection('auth')">Autenticação</button>
+          <button type="button" onclick="showSection('services')">Serviços</button>
+          <button type="button" onclick="showSection('items')">Itens</button>
+          <button type="button" onclick="showSection('quotes')">Orçamentos</button>
+        </nav>
+      </header>
+
+      <main class="content">
+        <div id="status" class="status hidden"></div>
+
+        <section id="auth" class="panel active">
+          <h2>Autenticação</h2>
+          <div class="grid two-column" style="display:none">
+            <div class="form-card">
+              <h3>Configurar backend</h3>
+              <label>
+                URL do backend
+                <input id="apiBase" type="text" value="http://127.0.0.1:8000" placeholder="http://127.0.0.1:8000" />
+              </label>
+              <button class="secondary" type="button" onclick="showStatus('Atualize o URL, depois faça login ou cadastro.', 'success')">Salvar URL</button>
+            </div>
+
+            <div class="form-card">
+              <h3>Token</h3>
+              <p>Após o login, o token é salvo localmente para autorizar as rotas.</p>
+              <div id="tokenCard" class="token-card hidden">
+                <strong>Token JWT</strong>
+                <code id="tokenValue"></code>
+                <div style="margin-top: 16px;">
+                  <button class="secondary" type="button" onclick="clearToken()">Sair</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid two-column" style="margin-top: 24px;">
+            <form class="form-card" onsubmit="registerUser(event)">
+              <h3>Registrar usuário</h3>
+              <label>
+                Nome completo
+                <input name="full_name" type="text" required />
+              </label>
+              <label>
+                Email
+                <input name="email" type="email" required />
+              </label>
+              <label>
+                Senha
+                <input name="password" type="password" required />
+              </label>
+              <input type="submit" value="Registrar" />
+            </form>
+
+            <form class="form-card" onsubmit="loginUser(event)">
+              <h3>Fazer login</h3>
+              <label>
+                Email
+                <input name="email" type="email" required />
+              </label>
+              <label>
+                Senha
+                <input name="password" type="password" required />
+              </label>
+              <input type="submit" value="Entrar" />
+            </form>
+          </div>
+        </section>
+
+        <section id="services" class="panel">
+          <h2>Serviços</h2>
+          <div class="grid two-column">
+            <form class="form-card" onsubmit="createService(event)">
+              <h3>Adicionar serviço</h3>
+              <label>
+                Nome
+                <input name="name" type="text" required />
+              </label>
+              <label>
+                Descrição
+                <textarea name="description"></textarea>
+              </label>
+              <label>
+                Preço
+                <input name="unit_price" type="number" step="0.01" required />
+              </label>
+              <input type="submit" value="Salvar serviço" />
+            </form>
+            <div class="list-card">
+              <h3>Serviços existentes</h3>
+              <ul id="servicesList" class="response-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="items" class="panel">
+          <h2>Itens</h2>
+          <div class="grid two-column">
+            <form class="form-card" onsubmit="createItem(event)">
+              <h3>Adicionar item</h3>
+              <label>
+                Nome
+                <input name="name" type="text" required />
+              </label>
+              <label>
+                Descrição
+                <textarea name="description"></textarea>
+              </label>
+              <label>
+                Preço
+                <input name="unit_price" type="number" step="0.01" required />
+              </label>
+              <input type="submit" value="Salvar item" />
+            </form>
+            <div class="list-card">
+              <h3>Itens existentes</h3>
+              <ul id="itemsList" class="response-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="quotes" class="panel">
+          <h2>Orçamentos</h2>
+          <div class="grid two-column">
+            <form class="form-card" onsubmit="createQuote(event)">
+              <h3>Criar orçamento</h3>
+              <label>
+                Nome do cliente
+                <input name="client_name" type="text" required />
+              </label>
+              <label>
+                Email do cliente
+                <input name="client_email" type="email" required />
+              </label>
+              <label>
+                Serviços
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <select id="quoteServiceSelect">
+                    <option value="">-- selecione um serviço --</option>
+                  </select>
+                  <input id="quoteServiceQty" type="number" min="1" value="1" style="width:80px" />
+                  <button type="button" onclick="addServiceToQuote()">Adicionar</button>
+                </div>
+              </label>
+              <ul id="quoteServicesList" class="response-list"></ul>
+
+              <label>
+                Itens
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <select id="quoteItemSelect">
+                    <option value="">-- selecione um item --</option>
+                  </select>
+                  <input id="quoteItemQty" type="number" min="1" value="1" style="width:80px" />
+                  <button type="button" onclick="addItemToQuote()">Adicionar</button>
+                </div>
+              </label>
+              <ul id="quoteItemsList" class="response-list"></ul>
+              <label>
+                Observações
+                <textarea name="notes"></textarea>
+              </label>
+              <input type="submit" value="Gerar orçamento" />
+            </form>
+            <div class="list-card">
+              <h3>Orçamentos existentes</h3>
+              <ul id="quotesList" class="response-list"></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        Abra o backend em <code>http://127.0.0.1:8000</code> e configure o mesmo URL no campo de backend para usar a interface.
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
   </body>
 </html>

@@ -31,3 +31,15 @@ def read_one(quote_id: int, db: Session = Depends(get_db)) -> QuoteRead:
     if not quote:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Orçamento não encontrado")
     return quote
+
+@router.delete("/{quote_id}", status_code=status.HTTP_204_NO_CONTENT)
+def remove(
+    quote_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_active_user),
+) -> None:
+    quote = get_quote(db, quote_id)
+    if not quote:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Orçamento não encontrado")
+    db.delete(quote)
+    db.commit()

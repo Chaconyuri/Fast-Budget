@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routers import auth, items, quotes, services
 from app.common.config import settings
@@ -18,6 +19,20 @@ app = FastAPI(
         {"name": "items", "description": "Cadastro e manutenção de itens."},
         {"name": "quotes", "description": "Geração e consulta de orçamentos."},
     ],
+)
+
+# Habilita CORS para o frontend local e para o próprio backend durante desenvolvimento
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

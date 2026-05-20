@@ -28,6 +28,8 @@ class QuoteLineServiceRead(BaseModel):
     quantity: int
     unit_price: float
     line_total: float
+    service_name: str
+    service_description: str | None = None
 
 
 class QuoteLineItemRead(BaseModel):
@@ -37,6 +39,8 @@ class QuoteLineItemRead(BaseModel):
     quantity: int
     unit_price: float
     line_total: float
+    item_name: str
+    item_description: str | None = None
 
 
 class QuoteRead(BaseModel):

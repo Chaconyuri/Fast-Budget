@@ -54,6 +54,4 @@ def remove(
     service = get_service(db, service_id)
     if not service:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Serviço não encontrado")
-    if service.created_by_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Sem permissão para excluir este serviço")
     delete_service(db, service)

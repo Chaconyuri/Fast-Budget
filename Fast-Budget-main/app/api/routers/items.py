@@ -54,8 +54,6 @@ def remove(
     item = get_item(db, item_id)
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item não encontrado")
-    if item.created_by_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Sem permissão para excluir este item")
     delete_item(db, item)
 
 from app.crud.item import list_items_by_user

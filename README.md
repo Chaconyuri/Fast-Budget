@@ -17,9 +17,43 @@ pip install -r requirements.txt
 
 ## Executar
 
+A partir da pasta do projeto:
+
+```bash
+pip install -r requirements.txt
+```
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Se `uvicorn` não estiver disponível no PATH:
+
 ```bash
 python -m uvicorn app.main:app --reload
 ```
+
+Para forçar host e porta:
+
+```bash
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+> Não use `uvicorn app.main:app --` porque `--` sozinho apenas sinaliza o fim das opções.
+
+## Frontend local
+
+O projeto inclui um frontend simples dentro da pasta `Fast-Budget-main`:
+
+- `Fast-Budget-main/index.html`
+- `Fast-Budget-main/styles.css`
+- `Fast-Budget-main/app.js`
+
+Abra `Fast-Budget-main/index.html` no navegador ou sirva essa pasta com um servidor estático (por exemplo `python -m http.server`) para testar a interface.
+
+Observações importantes:
+- A aba **Autenticação** exibe apenas os formulários de **Registrar** e **Fazer login**. O bloco de configuração de backend e do token está oculto por padrão (mantido no DOM para compatibilidade com o JavaScript).
+- Backend padrão esperado: `http://127.0.0.1:8000`. Se precisar alterar, abra as devtools e modifique o valor do input `id="apiBase"`, ou torne o bloco visível editando `index.html`.
 
 ## Swagger
 

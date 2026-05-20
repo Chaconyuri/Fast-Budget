@@ -33,6 +33,15 @@ class QuoteService(Base):
     line_total: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
 
     quote = relationship("Quote", back_populates="services")
+    service = relationship("Service")
+
+    @property
+    def service_name(self) -> str:
+        return self.service.name if self.service else ''
+
+    @property
+    def service_description(self) -> str | None:
+        return self.service.description if self.service else None
 
 
 class QuoteItem(Base):
@@ -46,3 +55,12 @@ class QuoteItem(Base):
     line_total: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
 
     quote = relationship("Quote", back_populates="items")
+    item = relationship("Item")
+
+    @property
+    def item_name(self) -> str:
+        return self.item.name if self.item else ''
+
+    @property
+    def item_description(self) -> str | None:
+        return self.item.description if self.item else None
